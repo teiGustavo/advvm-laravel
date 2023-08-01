@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ReportsController;
+use App\Http\Controllers\ExcelController;
 
 Route::get('/welcome', function () {
     return view('welcome');
@@ -14,6 +15,7 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/reports', [ReportsController::class, 'index'])->name('reports');
+        Route::get('/excel', [ExcelController::class, 'index'])->name('excel');
     });
 });
 
