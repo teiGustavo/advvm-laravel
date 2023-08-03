@@ -53,7 +53,7 @@
 
                 <div class="form-floating">
                     <input type="email" class="form-control" id="email" name="email"
-                           placeholder="name@example.com" value="ilang@example.net">
+                           placeholder="name@example.com" value="rice.hannah@example.com">
                     <label for="email">Email address</label>
                 </div>
                 <div class="form-floating">

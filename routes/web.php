@@ -16,6 +16,8 @@ Route::middleware('auth')->group(function () {
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/reports', [ReportsController::class, 'index'])->name('reports');
         Route::get('/excel', [ExcelController::class, 'index'])->name('excel');
+        Route::post('/excel/selectMonth', [ExcelController::class, 'selectMonth'])->name('excel.selectMonth');
+        Route::post('/excel/download', [ExcelController::class, 'download'])->name('excel.download');
     });
 });
 
