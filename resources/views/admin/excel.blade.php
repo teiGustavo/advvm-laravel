@@ -15,8 +15,8 @@
                     <h1 class="modal-title fs-5" id="modalSelectExcelLabel">Baixar Excel:</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <form method="POST" action="{{ route('admin.excel.download') }}">
+                <form method="POST" action="{{ route('admin.excel.download') }}" id="formExcel">
+                    <div class="modal-body">
                         @csrf
                         <div class="form-floating mb-3" id="divSelectYear">
                                 <select class="form-select" id="selectYear" aria-label="Floating label select">
@@ -33,12 +33,12 @@
                             </select>
                             <label for="selectYear">Selecione o mês:</label>
                         </div>
-                    </form>
-                </div>
-                <div class="modal-footer hidden" id="modalFooter">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sair</button>
-                    <button type="button" class="btn btn-success">Baixar</button>
-                </div>
+                    </div>
+                    <div class="modal-footer hidden" id="modalFooter">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sair</button>
+                        <button type="submit" class="btn btn-success" id="downloadExcel">Baixar</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -46,34 +46,62 @@
 
 @section('js')
 <script>
-    $('#btn').trigger('click');
+    let form =  $('#formExcel');
+    let excelButton =  $('#btn');
+    let downloadButton =  $('#downloadExcel');
+    let divSelectMonth = $('#divSelectMonth');
+    let selectMonth = $('#selectMonth');
+    let selectYear = $("#selectYear");
+    let selectYearOption = $("#selectYear option");
+    let modalFooter = $('#modalFooter');
+    let csrfToken = $("[name='_token']");
 
-    $("#selectYear option").on('click', function () {
+    function submitSelectForm() {
         $.ajax({
             url: '{{ route('admin.excel.selectMonth') }}',
             data: {
-                '_token': $("[name='_token']").val(),
-                year: $("#selectYear").val()
+                _token: csrfToken.val(),
+                year: selectYear.val()
             },
             method: 'POST'
         }).done(function (response) {
-            let divSelectMonth = $('#divSelectMonth');
-            let selectMonth = $('#selectMonth');
-            let modalFooter = $('#modalFooter');
-
             divSelectMonth.hide();
             selectMonth.empty()
 
             divSelectMonth.fadeIn(400);
 
             response.forEach(function (month) {
-                $('#selectMonth').append($('<option>', {
+                selectMonth.append($('<option>', {
                     value: month,
                     text: month
                 }));
             });
 
             modalFooter.fadeIn(200);
+        });
+    }
+
+    excelButton.on("click", function () {
+        submitSelectForm();
+    });
+
+    excelButton.trigger('click');
+
+    selectYearOption.on('click', function () {
+        submitSelectForm();
+    });
+
+    form.submit(function (e) {
+        e.preventDefault();
+
+        $.ajax({
+            url: '{{ route('admin.excel.download') }}',
+            data: {
+                _token: csrfToken.val(),
+                year: selectYear.val(),
+                month: selectMonth.val()
+            },
+            method: 'POST'
         });
     });
 </script>
