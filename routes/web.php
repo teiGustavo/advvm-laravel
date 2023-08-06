@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Report;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AuthController;
@@ -14,10 +15,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
 
     Route::prefix('admin')->name('admin.')->group(function () {
+        Route::get('/createReport', [ReportsController::class, 'createReport'])->name('createReport');
+        Route::post('/reports/selectMonth', [ReportsController::class, 'selectMonth'])
+            ->name('reports.selectMonth');
         Route::get('/reports', [ReportsController::class, 'index'])->name('reports');
+
         Route::get('/excel', [ExcelController::class, 'index'])->name('excel');
         Route::post('/excel/selectMonth', [ExcelController::class, 'selectMonth'])->name('excel.selectMonth');
-        Route::post('/excel/download', [ExcelController::class, 'download'])->name('excel.download');
+        Route::post('/excel/generate', [ExcelController::class, 'generate'])->name('excel.generate');
+        Route::get('/excel/download/{fileName?}', [ExcelController::class, 'download'])->name('excel.download');
     });
 });
 

@@ -19,7 +19,7 @@
 <nav class="main_nav">
     @section('sidebar')
         <a href="{{ route('home') }}">Home</a>
-        <a href="">Cadastrar</a>
+        <a href="{{ route('admin.createReport') }}">Cadastrar</a>
         <a href="{{ route('admin.reports') }}">Lançamentos</a>
         <a href="{{ route('admin.excel') }}">Excel</a>
         <a href="{{ route('auth.logout') }}">Sair</a>

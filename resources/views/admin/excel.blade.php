@@ -2,7 +2,7 @@
 
 @section('content')
     <!-- Button trigger modal -->
-    <button type="button" id="btn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalSelectExcel">
+    <button type="button" id="btn" class="btn btn-light text-light" data-bs-toggle="modal" data-bs-target="#modalSelectExcel">
         Baixar Excel
     </button>
 
@@ -13,9 +13,11 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="modalSelectExcelLabel">Baixar Excel:</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div id="loading" class="spinner-grow text-info spinner-grow-sm hidden" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
                 </div>
-                <form method="POST" action="{{ route('admin.excel.download') }}" id="formExcel">
+                <form method="POST" action="{{ route('admin.excel.generate') }}" id="formExcel">
                     <div class="modal-body">
                         @csrf
                         <div class="form-floating mb-3" id="divSelectYear">
@@ -55,6 +57,7 @@
     let selectYearOption = $("#selectYear option");
     let modalFooter = $('#modalFooter');
     let csrfToken = $("[name='_token']");
+    let loading = $("#loading");
 
     function submitSelectForm() {
         $.ajax({
@@ -91,17 +94,24 @@
         submitSelectForm();
     });
 
+    downloadButton.on("click", function () {
+        loading.show();
+    })
+
     form.submit(function (e) {
         e.preventDefault();
 
         $.ajax({
-            url: '{{ route('admin.excel.download') }}',
+            url: this.action,
             data: {
                 _token: csrfToken.val(),
                 year: selectYear.val(),
                 month: selectMonth.val()
             },
             method: 'POST'
+        }).done(function (response) {
+            window.open("{{ route("admin.excel.download") }}/" + response);
+            loading.hide();
         });
     });
 </script>
