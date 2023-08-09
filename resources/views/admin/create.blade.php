@@ -1,7 +1,7 @@
 @extends('master')
 
 @section('content')
-    @if(empty(session('month')))
+    @if(session()->missing('month'))
         <!-- Button trigger modal -->
         <button type="button" id="btn" class="btn btn-light text-light" data-bs-toggle="modal"
                 data-bs-target="#modalSelectMonth">Começar</button>
@@ -35,28 +35,16 @@
         </div>
     @endif
 
-    <div id="divForm" class="container-sm text-light" style="max-width: 750px">
-        <form class="mt-3">
-            <div class="row mb-3 text-left">
-                <label for="inputEmail3" class="col-sm-2 col-form-label">Dia:</label>
-                <div class="col-sm-10">
-                    <input type="email" class="form-control text-light" id="inputEmail3" style="background: #2f2841; border: none;">
-                </div>
-            </div>
-            <div class="row mb-3 text-left">
-                <label for="inputEmail3" class="col-sm-2 col-form-label">Lançamento:</label>
-                <div class="col-sm-10">
-                    <input type="email" class="form-control text-light" id="inputEmail3" style="background: #2f2841; border: none;">
-                </div>
-            </div>
-            <div class="row mb-3 text-left">
-                <label for="inputEmail3" class="col-sm-2 col-form-label">Valor:</label>
-                <div class="col-sm-10 align-end">
-                    <input type="email" class="form-control text-light" id="inputEmail3" style="background: #2f2841; border: none;">
-                </div>
-            </div>
-            <button type="submit" class="btn btn-light mb-3 text-light">Cadastrar</button>
-            <button type="submit" class="btn btn-danger mb-3 text-light" id="btnFinalizar">Finalizar</button>
+    <div id="divForm" class="container-sm text-light hidden" style="max-width: 750px">
+        <form id="formCreate" action="{{ route('admin.reports.store') }}" class="mt-3">
+            @csrf
+
+            <x-forms.input type="date" label="Dia:" :min="session('dateMin')" :max="session('dateMax')" id="date" />
+            <x-forms.input label="Lançamento:" id="report" class="text-capitalize" />
+            <x-forms.input label="Valor:" id="value" />
+
+            <button type="button" class="btn btn-danger mb-3 text-light" id="btnFinalizar">Finalizar</button>
+            <button type="submit" class="btn btn-success mb-3 text-light">Cadastrar</button>
         </form>
     </div>
 @endsection
@@ -66,13 +54,22 @@
         let btnModal = $('#btn');
         let btnSelecionar = $('#btnSelectMonth');
         let btnSair = $('#btnSair');
+        let btnFinalizar = $('#btnFinalizar');
         let inputMonth = $('#month');
-        let form = $('#formMonth');
+        let formMonth = $('#formMonth');
+        let formCreate = $('#formCreate');
         let csrfToken = $("[name='_token']");
         let input = $('input');
         let divForm = $('#divForm');
+        let session = "{{ session('month') }}";
 
-        function updateBtn() {
+        if (session !== "") {
+            divForm.fadeIn(400);
+        } else {
+            btnModal.trigger("click");
+        }
+
+        inputMonth.change(function () {
             if (btnSelecionar.hasClass('disabled')) {
                 btnSelecionar.removeClass('disabled');
             }
@@ -80,13 +77,9 @@
             if (!inputMonth.val()) {
                 btnSelecionar.addClass('disabled');
             }
-        }
+        });
 
-        btnModal.trigger("click");
-
-        inputMonth.change(updateBtn);
-
-        form.submit(function (e) {
+        formMonth.submit(function (e) {
             e.preventDefault();
 
             $.ajax({
@@ -96,15 +89,38 @@
                     date: inputMonth.val()
                 },
                 method: 'POST'
-            }).done(function (response) {
+            }).done(function () {
                 btnSair.trigger('click');
 
                 btnModal.hide();
                 divForm.fadeIn(400);
+
+                location.reload();
             }).fail(function () {
                 divForm.hide();
                 btnModal.show();
             });
+        });
+
+        formCreate.submit(function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: this.action,
+                data: {
+                    _token: csrfToken.val(),
+                    date: $('#date').val(),
+                    report: $('#report').val(),
+                    value: $('#value').val(),
+                },
+                method: 'POST'
+            }).done(function () {
+                location.reload();
+            });
+        });
+
+        btnFinalizar.on('click', function () {
+            window.location.href = "{{ route('admin.endCreateReport') }}";
         });
     </script>
 @endsection

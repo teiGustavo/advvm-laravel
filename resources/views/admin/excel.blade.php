@@ -54,14 +54,13 @@
     let divSelectMonth = $('#divSelectMonth');
     let selectMonth = $('#selectMonth');
     let selectYear = $("#selectYear");
-    let selectYearOption = $("#selectYear option");
     let modalFooter = $('#modalFooter');
     let csrfToken = $("[name='_token']");
     let loading = $("#loading");
 
     function submitSelectForm() {
         $.ajax({
-            url: '{{ route('admin.excel.selectMonth') }}',
+            url: '{{ route('admin.excel.getMonths') }}',
             data: {
                 _token: csrfToken.val(),
                 year: selectYear.val()
@@ -90,7 +89,7 @@
 
     excelButton.trigger('click');
 
-    selectYearOption.on('click', function () {
+    selectYear.change(function () {
         submitSelectForm();
     });
 
@@ -110,7 +109,7 @@
             },
             method: 'POST'
         }).done(function (response) {
-            window.open("{{ route("admin.excel.download") }}/" + response);
+            //window.open("{{ route("admin.excel.download") }}/" + response);
             loading.hide();
         });
     });

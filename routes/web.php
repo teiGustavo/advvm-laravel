@@ -16,12 +16,18 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/createReport', [ReportsController::class, 'createReport'])->name('createReport');
+        Route::post('/store', [ReportsController::class, 'store'])->name('reports.store');
+
+        Route::get('/endCreateReport', [ReportsController::class, 'endCreateReport'])
+            ->name('endCreateReport');
+
         Route::post('/reports/selectMonth', [ReportsController::class, 'selectMonth'])
             ->name('reports.selectMonth');
+
         Route::get('/reports', [ReportsController::class, 'index'])->name('reports');
 
         Route::get('/excel', [ExcelController::class, 'index'])->name('excel');
-        Route::post('/excel/selectMonth', [ExcelController::class, 'selectMonth'])->name('excel.selectMonth');
+        Route::post('/excel/getMonths', [ExcelController::class, 'getMonths'])->name('excel.getMonths');
         Route::post('/excel/generate', [ExcelController::class, 'generate'])->name('excel.generate');
         Route::get('/excel/download/{fileName?}', [ExcelController::class, 'download'])->name('excel.download');
     });

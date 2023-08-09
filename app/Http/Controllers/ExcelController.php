@@ -65,7 +65,7 @@ class ExcelController extends Controller
         };
     }
 
-    public function selectMonth(Request $request): JsonResponse
+    public function getMonths(Request $request): JsonResponse
     {
         $year = $request->only('year');
 
@@ -79,7 +79,7 @@ class ExcelController extends Controller
             $months[$key] = $this->getMonthFullName($month);
         }
 
-        return response()->json($months);
+        return response()->json(array_unique($months));
     }
 
     public function generateExcel(string $year, string $month): string|null {
@@ -100,21 +100,21 @@ class ExcelController extends Controller
 
 
         //Definindo o mês selecionado (mês atual) e o ano selecionado (ano atual)
-        $current_month = $this->getMonthFullName($month);
+        $current_month = $month;
         $current_year = $year;
 
         //Definindo o objeto dos relatórios e sua quantidade de linhas
-        $reports = Report::whereMonth("data_report", $month)->whereYear("data_report", $year);
+        $reports = Report::whereMonth("data_report", $this->getMonthDigits($month))
+            ->whereYear("data_report", $year)->get();
 
-        $num_reports = $reports->count();
-
-        $reports = $reports->get();
+        $num_reports = Report::whereMonth("data_report", $this->getMonthDigits($month))
+            ->whereYear("data_report", $year)->count();
 
         //Definindo a matriz que será usada para preencher a Planilha
         $texto = [];
         foreach ($reports as $key => $report) {
-            $texto[$key][0] = $report->cod_lancamento;
-            $texto[$key][1] = $report->data_report;
+            $texto[$key][0] = $report->id;
+            $texto[$key][1] = date("d/m/Y", strtotime($report->data_report));
             $texto[$key][2] = $report->historico;
             $texto[$key][3] = $report->tipo;
             $texto[$key][4] = $report->valor;
@@ -260,7 +260,6 @@ class ExcelController extends Controller
         $sheet->getStyle('B' . $num_reports + 8)->getNumberFormat()
             ->setFormatCode('R$ #,##0.00');
 
-
         //Escapa os erros
         $sheet->getCell('B' . $num_reports + 5)->getStyle()->setQuotePrefix(true);
         $sheet->getCell('B' . $num_reports + 6)->getStyle()->setQuotePrefix(true);
@@ -282,8 +281,13 @@ class ExcelController extends Controller
 
         //Gera o arquivo
         $file =  env("APP_NAME") . " - " . $current_month . ' de ' . $current_year . '.xlsx';
-        $path = storage_path("app/public/spreadsheets/$file");
-        $writer->save("$path");
+        $path = storage_path("app/public/spreadsheets");
+
+        if (!is_dir($path)) {
+            mkdir($path, 0777, true);
+        }
+
+        $writer->save("$path/$file");
 
         return $file;
     }
@@ -291,7 +295,7 @@ class ExcelController extends Controller
     public function generate(Request $request): Response
     {
         $year = $request->string('year', '2023');
-        $month = $this->getMonthDigits($request->string('month'));
+        $month = $request->string('month');
 
         $fileName = $this->generateExcel($year, $month);
 
@@ -300,6 +304,6 @@ class ExcelController extends Controller
 
     public function download(string $fileName): Response
     {
-        return response()->download(public_path("storage/spreadsheets/{$fileName}"));
+        return response()->download(storage_path("app/public/spreadsheets/{$fileName}"));
     }
 }

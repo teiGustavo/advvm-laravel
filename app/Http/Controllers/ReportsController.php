@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Report;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class ReportsController extends Controller
@@ -17,7 +19,10 @@ class ReportsController extends Controller
 
     public function createReport(): View
     {
-        return view("admin.create", ["title" => "Cadastro"]);
+        return view("admin.create", [
+            "title" => "Cadastro",
+            "lastDay" => self::getLastDayOfMonth(session('datePrefix', ''))
+        ]);
     }
 
     public function getMonthFullName(string $month): string
@@ -38,15 +43,52 @@ class ReportsController extends Controller
         };
     }
 
+    public static function getLastDayOfMonth(string $month): string
+    {
+        return date("t", strtotime($month));
+    }
+
     public function selectMonth(Request $request): Response
     {
-        session()->put('datePrefix', $request["date"]);
+        $monthWithYear = $request->date;
+        $month = date("M", strtotime($monthWithYear));
+        $lastDay = self::getLastDayOfMonth($month);
 
-        $month = date("M", strtotime($request["date"]));
-
+        session()->put('dateMin', "$monthWithYear-01");
+        session()->put('dateMax', "$monthWithYear-$lastDay");
         session()->put('month', $month);
 
-
         return response()->json(session('month'));
+    }
+
+    public function endCreateReport(): RedirectResponse
+    {
+
+        if (session()->exists('month')) {
+            session()->pull('month');
+        }
+
+        return redirect()->route('admin.createReport');
+    }
+
+    public function store(Request $request): Response
+    {
+        $cases = ['Saldo Anterior', 'Oferta', 'Ofertas', 'Dízimo', 'Dizimo', 'Dízimos', 'Dizimos'];
+
+        $report = new Report;
+
+        $report->data_report = $request->date;
+        $report->historico = ucwords($request->report);
+        $report->valor = $request->value;
+
+        if (in_array($report->historico, $cases)) {
+            $report->tipo = "Entrada";
+        } else {
+            $report->tipo = "Saída";
+        }
+
+        $report->save();
+
+        return response()->json($report);
     }
 }
