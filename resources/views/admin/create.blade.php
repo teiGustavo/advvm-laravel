@@ -38,7 +38,6 @@
     <div id="divForm" class="container-sm text-light hidden" style="max-width: 750px">
         <form id="formCreate" action="{{ route('admin.reports.store') }}" class="mt-3">
             @csrf
-
             <x-forms.input type="date" label="Dia:" :min="session('dateMin')" :max="session('dateMax')" id="date" />
             <x-forms.input label="Lançamento:" id="report" class="text-capitalize" />
             <x-forms.input label="Valor:" id="value" />

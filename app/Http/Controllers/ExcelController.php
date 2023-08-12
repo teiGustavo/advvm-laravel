@@ -8,10 +8,6 @@ use App\Models\Report;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use PhpOffice\PhpSpreadsheet\Style\Border;
-use PhpOffice\PhpSpreadsheet\Style\Fill;
 use Symfony\Component\HttpFoundation\Response;
 
 class ExcelController extends Controller
@@ -33,7 +29,7 @@ class ExcelController extends Controller
 
     public function getMonths(Request $request): JsonResponse
     {
-        $year = $request['year'];
+        $year = $request->string('year', '2023');
 
         $data_reports = Report::select('data_report')->whereYear('data_report', $year)
             ->distinct()->orderBy('data_report', 'ASC')->get();

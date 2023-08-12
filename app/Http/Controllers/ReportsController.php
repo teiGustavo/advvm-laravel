@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Helpers;
 use App\Models\Report;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -21,44 +22,21 @@ class ReportsController extends Controller
     {
         return view("admin.create", [
             "title" => "Cadastro",
-            "lastDay" => self::getLastDayOfMonth(session('datePrefix', ''))
+            "lastDay" => Helpers::getLastDayOfMonth(session('datePrefix', ''))
         ]);
-    }
-
-    public function getMonthFullName(string $month): string
-    {
-        return match ($month) {
-            'Jan', '1' => 'Janeiro',
-            'Feb', 'Fev', '2' => 'Fevereiro',
-            'Mar', '3' => 'Marco',
-            'Apr', 'Abr', '4' => 'Abril',
-            'May', 'Mai', '5' => 'Maio',
-            'Jun', '6' => 'Junho',
-            'Jul', '7' => 'Julho',
-            'Aug', 'Ago', '8' => 'Agosto',
-            'Sep', 'Set', '9' => 'Setembro',
-            'Oct', 'Out', '10' => 'Outubro',
-            'Nov', '11' => 'Novembro',
-            'Dec', 'Dez', '12' => 'Dezembro'
-        };
-    }
-
-    public static function getLastDayOfMonth(string $month): string
-    {
-        return date("t", strtotime($month));
     }
 
     public function selectMonth(Request $request): Response
     {
-        $monthWithYear = $request->date;
+        $monthWithYear = $request->string('date');
         $month = date("M", strtotime($monthWithYear));
-        $lastDay = self::getLastDayOfMonth($month);
+        $lastDay = Helpers::getLastDayOfMonth($month);
 
         session()->put('dateMin', "$monthWithYear-01");
         session()->put('dateMax', "$monthWithYear-$lastDay");
         session()->put('month', $month);
 
-        return response()->json(session('month'));
+        return response()->json($month);
     }
 
     public function endCreateReport(): RedirectResponse
@@ -66,6 +44,7 @@ class ReportsController extends Controller
 
         if (session()->exists('month')) {
             session()->pull('month');
+            session()->pull('saldoAnterior');
         }
 
         return redirect()->route('admin.createReport');
@@ -77,14 +56,18 @@ class ReportsController extends Controller
 
         $report = new Report;
 
-        $report->data_report = $request->date;
-        $report->historico = ucwords($request->report);
-        $report->valor = $request->value;
+        $report->data_report = $request->string('date');
+        $report->historico = ucwords($request->string('report'));
+        $report->valor = $request->string('value');
 
         if (in_array($report->historico, $cases)) {
             $report->tipo = "Entrada";
         } else {
             $report->tipo = "Saída";
+        }
+
+        if ($report->historico == "Saldo Anterior") {
+            session()->pull('saldoAnterior');
         }
 
         $report->save();

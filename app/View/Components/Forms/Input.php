@@ -16,7 +16,8 @@ class Input extends Component
         public string $id = '',
         public string $label = '',
         public string | null $min = '',
-        public string | null $max = ''
+        public string | null $max = '',
+        public string | null $value = '',
     ) {}
 
     /**

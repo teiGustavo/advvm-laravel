@@ -1,7 +1,7 @@
 @extends('master')
 
 @section('css')
-    <link rel="stylesheet" href="{{ asset('css/auth/login.css') }}">
+    <link rel="stylesheet" href="{{ asset('build/assets/sign-in-79a6faeb.css') }}">
 @endsection
 
 @section('sidebar')

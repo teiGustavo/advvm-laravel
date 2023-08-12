@@ -108,7 +108,7 @@
                 month: selectMonth.val()
             },
             method: 'POST'
-        }).done(function (response) {
+        }).done(function () {
             //window.open("{{ route("admin.excel.download") }}/" + response);
             loading.hide();
         });

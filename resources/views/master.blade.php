@@ -6,14 +6,14 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('build/assets/app-8b512488.css') }}">
+    <link rel="stylesheet" href="{{ asset('build/assets/style-ef4c250f.css') }}">
 
     @yield('css')
 
     <title> {{ $title }} | {{ env('APP_NAME') }}</title>
+
+{{--    @vite(['resources/css/app.css', 'resources/js/app.js'])--}}
 </head>
 <body>
 <nav class="main_nav">
@@ -36,9 +36,7 @@
 
 
 <script src="{{ asset('js/jquery.js') }}"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
-        crossorigin="anonymous"></script>
+<script src="{{ asset('build/assets/app-fb3fcc52.js') }}"></script>
 
 @yield('js')
 </body>

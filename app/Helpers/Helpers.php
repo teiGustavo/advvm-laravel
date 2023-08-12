@@ -39,4 +39,10 @@ class Helpers
             'Dec', 'Dez' => 12
         };
     }
+
+    public static function getLastDayOfMonth(string $month): string
+    {
+        return date("t", strtotime($month));
+    }
+
 }
