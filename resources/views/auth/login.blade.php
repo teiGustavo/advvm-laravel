@@ -1,7 +1,7 @@
 @extends('master')
 
 @section('css')
-    <link rel="stylesheet" href="{{ asset('build/assets/sign-in-79a6faeb.css') }}">
+    @vite(['resources/css/auth/log-in.css'])
 @endsection
 
 @section('sidebar')

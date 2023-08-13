@@ -2,18 +2,18 @@
 
 namespace App\Providers;
 
-use App\Helpers\Excel;
+use App\Helpers\Helpers;
 use Illuminate\Support\ServiceProvider;
 
-class ExcelServiceProvider extends ServiceProvider
+class HelpersServiceProvider extends ServiceProvider
 {
     /**
      * Register services.
      */
     public function register(): void
     {
-        $this->app->bind('Excel', function () {
-            return new Excel();
+        $this->app->bind('Helpers', function () {
+            return new Helpers();
         });
     }
 

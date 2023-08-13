@@ -48,6 +48,7 @@
 
 @section('js')
 <script>
+    let body = $('body');
     let form =  $('#formExcel');
     let excelButton =  $('#btn');
     let downloadButton =  $('#downloadExcel');
@@ -57,6 +58,10 @@
     let modalFooter = $('#modalFooter');
     let csrfToken = $("[name='_token']");
     let loading = $("#loading");
+
+    body.ready(function () {
+        excelButton.trigger('click');
+    })
 
     function submitSelectForm() {
         $.ajax({
@@ -87,8 +92,6 @@
         submitSelectForm();
     });
 
-    excelButton.trigger('click');
-
     selectYear.change(function () {
         submitSelectForm();
     });
@@ -108,8 +111,8 @@
                 month: selectMonth.val()
             },
             method: 'POST'
-        }).done(function () {
-            //window.open("{{ route("admin.excel.download") }}/" + response);
+        }).done(function (response) {
+            window.open("{{ route("admin.excel.download") }}/" + response);
             loading.hide();
         });
     });

@@ -35,7 +35,7 @@
         </div>
     @endif
 
-    <div id="divForm" class="container-sm text-light hidden" style="max-width: 750px">
+    <div id="divForm" class="container-sm text-light {{ session()->missing('month') ? 'hidden' : '' }}" style="max-width: 750px">
         <form id="formCreate" action="{{ route('admin.reports.store') }}" class="mt-3">
             @csrf
             <x-forms.input type="date" label="Dia:" :min="session('dateMin')" :max="session('dateMax')" id="date" />
@@ -50,6 +50,7 @@
 
 @section('js')
     <script>
+        let body = $('body');
         let btnModal = $('#btn');
         let btnSelecionar = $('#btnSelectMonth');
         let btnSair = $('#btnSair');
@@ -60,13 +61,12 @@
         let csrfToken = $("[name='_token']");
         let input = $('input');
         let divForm = $('#divForm');
-        let session = "{{ session('month') }}";
+        let inputDate = $('#date');
 
-        if (session !== "") {
-            divForm.fadeIn(400);
-        } else {
-            btnModal.trigger("click");
-        }
+        body.ready(function () {
+            btnModal.trigger('click');
+            inputDate.focus();
+        })
 
         inputMonth.change(function () {
             if (btnSelecionar.hasClass('disabled')) {
@@ -108,13 +108,16 @@
                 url: this.action,
                 data: {
                     _token: csrfToken.val(),
-                    date: $('#date').val(),
-                    report: $('#report').val(),
-                    value: $('#value').val(),
+                    data_report: $('#date').val(),
+                    historico: $('#report').val(),
+                    valor: $('#value').val(),
+                    tipo: 'auto'
                 },
                 method: 'POST'
-            }).done(function () {
-                location.reload();
+            }).done(function (response) {
+                if (response.id) {
+                    location.reload();
+                }
             });
         });
 

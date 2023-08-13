@@ -1,5 +1,269 @@
-@import url('~bootstrap/dist/css/bootstrap.min.css');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* @font-face {
+    src:  url(fonts/Poppins/Poppins-Regular.ttf);
+    font-family: "Poppins";
+    font-weight: normal;
+} */
+
+@font-face {
+    src:  url(fonts/JetBrainsMono/JetBrainsMono-Regular.ttf);
+    font-family: "JetBrains Mono";
+    font-weight: normal;
+}
+
+* {
+    font-family: "JetBrains Mono", sans-serif;
+    margin: 0;
+    padding: 0;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+body {
+    background: #201b2c;
+}
+
+p, h4 {
+    color: white;
+}
+
+.main_nav {
+    padding: 20px;
+    text-align: center;
+    background: #2f2841;
+}
+
+.main_nav a {
+    display: inline-block;
+    color: #ffffff;
+    padding: 10px 20px;
+    text-decoration: none;
+    background: rgba(0, 0, 0, 0.2);
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    transition-duration: 0.3s;
+}
+
+.main_nav a:hover {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.main_content {
+    padding: 5%;
+    height: 84vh;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.users {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.users_user {
+    flex-basis: 48%;
+    padding: 20px;
+    background: #eeeeee;
+    margin: 1%;
+    border-radius: 10px;
+    max-height: 160px;
+    text-align: left;
+    display: flex;
+}
+
+.users_user h1 {
+    width: fit-content;
+}
+
+.users_user p {
+    color: black;
+}
+
+.contact {
+    text-align: center;
+}
+
+.contact h2 {
+    font-size: 2em;
+}
+
+.contact p {
+    margin: 20px 0 40px 0;
+}
+
+.contact form input, .contact form textarea {
+    display: block;
+    width: 67%;
+    margin: 0 auto 20px auto;
+    padding: 20px;
+    font-size: 1.1em;
+    border: 3px solid #eeeeee;
+    resize: none;
+}
+
+.contact form button {
+    font-size: 1em;
+    border: none;
+    padding: 20px;
+    background: #27ae60;
+    color: #ffffff;
+    font-weight: bold;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    margin: 10px;
+    cursor: pointer;
+    transition-duration: 0.3s;
+}
+
+.contact form button:hover {
+    background: #2ecc71;
+}
+
+.contact form button[type='reset'] {
+    background: #7f8c8d;
+}
+
+.contact form button[type='reset']:hover {
+    background: #95a5a6;
+}
+
+.error {
+    text-align: center;
+}
+
+.error h2 {
+    font-size: 3em;
+}
+
+.error p {
+    margin: 20px 0;
+    font-size: 1em;
+}
+
+.main_footer {
+    text-align: center;
+    padding: 20px;
+    color: #cccccc;
+}
+
+#divPagination {
+    max-width: 1062px;
+    min-height: 600px;
+    display: flex;
+    flex-direction: column;
+}
+
+#reports {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 1062px;
+    justify-content: center;
+    height: 540px;
+    align-items: center;
+}
+
+#download {
+    border: 1px solid;
+    border-radius: 10px;
+    padding: 20px;
+    background-color: #27ae60;
+    width: 20vw;
+}
+
+button:hover {
+    transform: scale(1.1);
+    transition: all 0.5s;
+}
+
+.xdebug-var-dump {
+    color: white;
+}
+
+.md {
+    display: inline-flex;
+}
+
+.selectYear {
+    display: flex;
+    padding: 20px;
+    width: 500px;
+    height: 300px;
+    flex-direction: column;
+    background-color: #2f2841;
+    border-radius: 20px;
+    justify-content: center;
+}
+
+.selectYear label {
+    color: white;
+    margin: 20px;
+}
+
+.selectYear select {
+    padding: 10px;
+    border-radius: 7px;
+    text-transform: capitalize;
+    background: #6f648a;
+}
+
+.btns {
+    width: 125px;
+    height: 50px;
+    border-radius: 15px;
+    align-self: center;
+    margin: 10px;
+    border: 1px solid;
+    padding: 10px;
+    background: #2ecc71 !important;
+}
+
+.div-list {
+    padding: 25px;
+    background-color: #2f2841;
+    border-radius: 5px;
+}
+
+.div-list p {
+    color: white;
+}
+
+.div-list ul {
+    width: 300px;
+    text-align: start;
+}
+
+@media (min-width: 900px) {
+    .main_content {
+        height: 81vh;
+    }
+}
+
+@media (max-width: 900px) {
+    .main_nav a {
+        display: none;
+    }
+}
+
+@media (max-width: 650px) {
+    #divPagination p {
+        display: none;
+    }
+
+    #paginacao {
+        align-self: center;
+    }
+}
+
+@media (min-width: 1200px) {
+    #divPagination {
+        min-width: 40rem;
+    }
+}

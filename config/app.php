@@ -168,6 +168,8 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Providers\ExcelServiceProvider::class,
+        App\Providers\HelpersServiceProvider::class,
     ])->toArray(),
 
     /*
@@ -183,8 +185,8 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'Example' => App\Facades\Example::class,
-        'Helpers' => \App\Helpers\Helpers::class,
-        'Excel' => \App\Helpers\Excel::class,
+        'Helpers' => \App\Helpers\Facades\HelpersFacade::class,
+        'Excel' => \App\Helpers\Facades\ExcelFacade::class,
     ])->toArray(),
 
 ];

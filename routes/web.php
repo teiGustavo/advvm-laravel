@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Report;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AuthController;
@@ -29,6 +28,10 @@ Route::middleware('auth')->group(function () {
             ->name('reports.selectMonth');
 
         Route::get('/reports', [ReportsController::class, 'index'])->name('reports');
+        Route::post('/reports/edit', [ReportsController::class, 'edit'])->name('reports.edit');
+        Route::post('/reports/update', [ReportsController::class, 'update'])->name('reports.update');
+        Route::get('/reports/find/{id?}', [ReportsController::class, 'find'])->name('reports.find');
+        Route::get('/reports/delete/{id?}', [ReportsController::class, 'delete'])->name('reports.delete');
 
         Route::get('/excel', [ExcelController::class, 'index'])->name('excel');
         Route::post('/excel/getMonths', [ExcelController::class, 'getMonths'])->name('excel.getMonths');
