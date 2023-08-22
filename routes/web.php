@@ -6,10 +6,6 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\ExcelController;
 
-Route::get('/welcome', function () {
-    return view('welcome');
-})->name('welcome');
-
 Route::get('/tests', function () {
 
 })->name('welcome');

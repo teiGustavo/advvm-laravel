@@ -98,7 +98,10 @@ class ReportsController extends Controller
 
         $report->data_report = $validated['data_report'];
         $report->historico = ucwords($validated['historico']);
-        $report->valor = $validated['valor'];
+
+        $valor = str_replace('.', '', $validated['valor']);
+        $valor = str_replace(',', '.', $valor);
+        $report->valor = $valor;
 
         if (in_array($report->historico, $cases)) {
             $report->tipo = "Entrada";

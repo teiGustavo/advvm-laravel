@@ -49,6 +49,8 @@
 @endsection
 
 @section('js')
+    <script src="{{ asset('jquery-mask.js') }}"></script>
+
     <script>
         let body = $('body');
         let btnModal = $('#btn');
@@ -62,10 +64,12 @@
         let input = $('input');
         let divForm = $('#divForm');
         let inputDate = $('#date');
+        let inputValue = $('#value');
 
         body.ready(function () {
             btnModal.trigger('click');
             inputDate.focus();
+            inputValue.mask("#.##0,00", {reverse: true});
         })
 
         inputMonth.change(function () {
@@ -110,7 +114,7 @@
                     _token: csrfToken.val(),
                     data_report: $('#date').val(),
                     historico: $('#report').val(),
-                    valor: $('#value').val(),
+                    valor: inputValue.val(),
                     tipo: 'auto'
                 },
                 method: 'POST'

@@ -1,7 +1,7 @@
 @extends('master')
 
 @section('content')
-    <div class="container bg-dark rounded-3 w-100">
+    <div class="container bg-dark rounded-3 w-100" id="div">
         <div class="container d-flex flex-column h-50" data-bs-theme="dark">
             <div class="d-flex justify-content-between mt-4 mb-5 p-2">
                 <h3 class="text-light align-self-center pl-2">
@@ -66,7 +66,7 @@
                     @foreach($reports as $report)
                         <tr class="" style="vertical-align: baseline">
                             <th scope="row">{{ $report->id }}</th>
-                            <td>{{ date("d/m/y", strtotime($report->data_report)) }}</td>
+                            <td>{{ date("d/m/Y", strtotime($report->data_report)) }}</td>
                             <td>{{ $report->historico }}</td>
                             <td>{{ $report->tipo }}</td>
                             <td>R$ {{ number_format($report->valor, 2, ',', '.') }}</td>
@@ -138,6 +138,8 @@
 @endsection
 
 @section('js')
+<script src="{{ asset('jquery-mask.js') }}"></script>
+
 <script>
     let form = $("#formUpdate");
     let data = $("#data_report");
@@ -147,42 +149,58 @@
     let saida = $("#saida");
     let valor = $("#valor");
     let csrfToken = $("[name='_token']");
-
-    if ({{ $reports->count() }} === 0) {
-        window.location.href = '{{ route('admin.reports') }}?page={{ $reports->lastPage() }}'
-    }
+    let oldValues = {};
 
     function updateReport(id) {
-        const getReports = async (id) => {
-            let url = '{{ env('APP_URL') }}';
+        function defineReports(id) {
+            axios
+                .get(`{{ env('APP_API_URL') }}/${id}`)
+                .then(function (response) {
+                    let report = response.data;
 
-            if ('{{ env('APP_ENV') }}' !== 'production') {
-                url = `${url}:8000`;
-            }
+                    data.val(report.data_report);
+                    historico.val(report.historico);
+                    valor.val(report.valor);
 
-            const response = await fetch(`${url}/api/reports/${id}`);
+                    if (report.tipo === 'Entrada') {
+                        entrada.attr('selected', 'selected');
+                    } else {
+                        saida.attr('selected', 'selected');
+                    }
 
-            return response.json();
-        }
-
-        const defineReports = async (id) => {
-            const report = await getReports(id);
-
-            data.val(report.data_report);
-            historico.val(report.historico);
-            valor.val(report.valor);
-
-            if (report.tipo === 'Entrada') {
-                entrada.attr('selected', 'selected');
-            } else {
-                saida.attr('selected', 'selected');
-            }
+                    oldValues = {
+                        data_report: report.data_report,
+                        historico: report.historico,
+                        valor: report.valor,
+                        tipo: report.tipo
+                    };
+                });
         }
 
         defineReports(id);
 
         form.submit(function (e) {
             e.preventDefault();
+
+            let div = $(`th:contains(${id})`).parent();
+
+            function formatDate(date) {
+                date = date.split('-');
+
+                return date[2] + '/' + date[1] + '/' + date[0];
+            }
+
+            function formatValue(value) {
+                return parseFloat(value).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
+            }
+
+            div.find("td:contains(" + formatDate(oldValues.data_report) + ")").text(formatDate(data.val()));
+            div.find("td:contains(" + oldValues.historico + ")").text(historico.val());
+            div.find("td:contains(" + oldValues.tipo + ")").text(tipo.val());
+            div.find("td:contains('R$')").text(formatValue(valor.val()));
+
+
+            $('#btnSair').trigger('click');
 
             $.ajax({
                 url: this.action,
@@ -195,14 +213,25 @@
                     valor: valor.val(),
                 },
                 method: 'POST'
-            }).done(function () {
-                location.reload();
-            })
+            }).done(() => { location.reload() });
         });
     }
 
     function deleteReport(id) {
-        window.location.href = '{{ route('admin.reports.delete') }}/' + id;
+        let div = $(`th:contains(${id})`).parent();
+        div.fadeOut(400);
+
+        setTimeout(() => {
+            div.remove();
+
+            if ($('tr').length <= 1) {
+                $('#div').hide();
+                window.location.href = '{{ route('admin.reports') }}?page={{ $reports->currentPage() - 1 }}';
+            }
+        }, 400);
+
+        axios
+            .delete(`{{ env('APP_API_URL') }}/${id}`);
     }
 </script>
 @endsection
